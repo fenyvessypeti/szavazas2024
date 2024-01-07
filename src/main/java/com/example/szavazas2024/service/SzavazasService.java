@@ -29,6 +29,7 @@ public class SzavazasService {
         szavazas.setTargy(szavazasCommand.getTargy());
         szavazas.setTipus(szavazasCommand.getTipus());
         szavazas.setElnok(szavazasCommand.getElnok());
+        if (szavazasEllenorzes(szavazasCommand)) {
             szavazasRepository.save(szavazas);
 
             for (SzavazatCommand szavazatCommand : szavazasCommand.getSzavazatok()) {
@@ -38,8 +39,21 @@ public class SzavazasService {
                 Szavazat mentettSzavazat = szavazatService.mentSzavazat(szavazat);
                 szavazat.setSzavazas(szavazas);
             }
+        }
+    }
 
+    private boolean szavazasEllenorzes(SzavazasCommand szavazasCommand) {
+        boolean isSikeres = (isElnokSzavazott(szavazasCommand)&&isMegfeleloStrukturaju(szavazasCommand));
+        return isSikeres;
+    }
+
+    private boolean isElnokSzavazott(SzavazasCommand szavazasCommand) {
+        return szavazasCommand.getElnok() != null;
+    }
+
+    private boolean isMegfeleloStrukturaju(SzavazasCommand szavazasCommand) {
+        return (szavazasCommand.getIdopont() != null && szavazasCommand.getTargy() != null &&
+                szavazasCommand.getTipus() != null);
     }
 
 }
-
